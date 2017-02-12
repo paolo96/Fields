@@ -11,10 +11,9 @@ void Field::mapField(){
 		for (int y=0; y<windowHeight; y++){
 			bool isPointInsideCharge=false;
 			for(int i=0; i<qCharges.size(); i++){
-				if( ((abs(x-qCharges[0].x)<(qCharges[0].size/2)) && (abs(y-qCharges[0].y)<(qCharges[0].size/2))) ) {
-					isPointInsideCharge = true;
-					break;
-				}
+					isPointInsideCharge = qCharges[i].isPointInside(x, y);
+                    if(isPointInsideCharge)
+                        break;
 			}
 			if(!isPointInsideCharge){
 				//std::cout<<"DEBUG: ("<<x<<","<<y<<") -> "<<potValueInPoint(x,y)<<std::endl;
@@ -39,13 +38,24 @@ double Field::potValueInPoint(int x, int y){
 	double distance, potFromSingleCharge;
 	
 	for(int i=0; i<qCharges.size(); i++){
-		distance = sqrt( pow(x-qCharges[i].x, 2) + pow(y-qCharges[i].y, 2) );
+        if(qCharges[i].shape==CIRCLE_SHAPE){
+            distance = sqrt( pow(x-qCharges[i].x, 2) + pow(y-qCharges[i].y, 2) );
 		
-		potFromSingleCharge = ( (k0*qCharges[i].value) / distance );
+            potFromSingleCharge = ( (k0*qCharges[i].value) / distance );
 		
-		totPotValue += potFromSingleCharge;
+            totPotValue += potFromSingleCharge;
+        } else if(qCharges[i].shape==SQUARE_SHAPE){
+            for(int X=qCharges[i].x; X<=(qCharges[i].x+qCharges[i].size); X++){
+                for(int Y=qCharges[i].y; Y<=(qCharges[i].y+qCharges[i].size); Y++){
+                    distance = sqrt( pow(x-X, 2) + pow(y-Y, 2) );
+                    
+                    potFromSingleCharge = ( (k0*qCharges[i].value) / distance );
+                    
+                    totPotValue += potFromSingleCharge;
+                }
+            }
+        }
 	}
-	
 	return totPotValue;
 }
 
@@ -57,13 +67,13 @@ void Field::findEquipotentialPoints(){
 	for (int x=0; x<windowWidth; x++){
 		for (int y=0; y<windowHeight; y++){
 
-			delta = abs( int(potIntensityMap[x][y]/linesDeepReduction) );
+            delta = abs( int(potIntensityMap[x][y]/linesDeepReduction) );
+            Point point = Point(x, y, potIntensityMap[x][y]);
 			
 			for (int X=x; X<windowWidth; X++){
 				for (int Y=y+1; Y<windowHeight; Y++){
 					if( (potIntensityMap[x][y]+delta)>=(potIntensityMap[X][Y]-delta) && (potIntensityMap[x][y]-delta)<=(potIntensityMap[X][Y]+delta) ) {
 						
-						Point point = Point(x, y, potIntensityMap[x][y]);
 						eqPotPoints.push_back(point);
 						//Using goto because in C++ doesn't exist "break" for nested loops
 						goto end;

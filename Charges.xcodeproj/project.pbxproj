@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		645AE30B1E5013D10008FED7 /* sfml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30A1E5013D10008FED7 /* sfml.cpp */; };
-		645AE3101E50143D0008FED7 /* charge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30D1E50143D0008FED7 /* charge.cpp */; };
 		645AE3111E50143D0008FED7 /* field.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30E1E50143D0008FED7 /* field.cpp */; };
 		645AE3121E50143D0008FED7 /* point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30F1E50143D0008FED7 /* point.cpp */; };
 		645AE3141E501B220008FED7 /* button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE3131E501B220008FED7 /* button.cpp */; };
+		645AE3191E50F3C80008FED7 /* charge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE3181E50F3C80008FED7 /* charge.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,11 +19,11 @@
 		645AE2F61E50130C0008FED7 /* Charges-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Charges-Info.plist"; sourceTree = "<group>"; };
 		645AE30A1E5013D10008FED7 /* sfml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sfml.cpp; sourceTree = "<group>"; };
 		645AE30C1E5014080008FED7 /* header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = header.h; sourceTree = "<group>"; };
-		645AE30D1E50143D0008FED7 /* charge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = charge.cpp; sourceTree = "<group>"; };
 		645AE30E1E50143D0008FED7 /* field.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = field.cpp; sourceTree = "<group>"; };
 		645AE30F1E50143D0008FED7 /* point.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = point.cpp; sourceTree = "<group>"; };
 		645AE3131E501B220008FED7 /* button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = button.cpp; sourceTree = "<group>"; };
 		645AE3151E502B550008FED7 /* sansation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sansation.ttf; sourceTree = "<group>"; };
+		645AE3181E50F3C80008FED7 /* charge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = charge.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +58,7 @@
 			children = (
 				645AE30C1E5014080008FED7 /* header.h */,
 				645AE30A1E5013D10008FED7 /* sfml.cpp */,
-				645AE30D1E50143D0008FED7 /* charge.cpp */,
+				645AE3181E50F3C80008FED7 /* charge.cpp */,
 				645AE30E1E50143D0008FED7 /* field.cpp */,
 				645AE30F1E50143D0008FED7 /* point.cpp */,
 				645AE3131E501B220008FED7 /* button.cpp */,
@@ -161,8 +161,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				645AE3121E50143D0008FED7 /* point.cpp in Sources */,
+				645AE3191E50F3C80008FED7 /* charge.cpp in Sources */,
 				645AE3141E501B220008FED7 /* button.cpp in Sources */,
-				645AE3101E50143D0008FED7 /* charge.cpp in Sources */,
 				645AE3111E50143D0008FED7 /* field.cpp in Sources */,
 				645AE30B1E5013D10008FED7 /* sfml.cpp in Sources */,
 			);

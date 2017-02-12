@@ -33,6 +33,8 @@ bool selecting_charge = false;
 bool isEqPotLines = true;
 bool isElFieldLines = false;
 bool isElFieldColor = false;
+bool shapingCircle = true;
+bool shapingSquare = false;
 
 int main()
 {
@@ -67,20 +69,25 @@ int main()
                         mainField.selectCharge(position.x, position.y);
                 }
             } else if (event.type == sf::Event::TextEntered) {
-                //Accept only numbers and the decimal point
                 std::cout<<"Pressed "<<event.text.unicode<<std::endl;
+                //Accept only numbers and the decimal point
                 if ((((event.text.unicode <= 57) && (event.text.unicode >= 48)) || (event.text.unicode == 46)) && adding_charge && showing_pop_up){
                     if(inputing_size)
                         size_input += static_cast<char>(event.text.unicode);
                     else
                         value_input += static_cast<char>(event.text.unicode);
+                
+                //Accet enter or space to proceed to next input
                 } else if((event.text.unicode==10 || event.text.unicode==32) && showing_pop_up && adding_charge){
                     if(inputing_size)
                         inputing_size = false;
                     else {
                         showing_pop_up = false;
                         inputing_size = true;
-                        mainField.addCharge(Charge(add_charge_holding_x, add_charge_holding_y, atof(size_input.c_str()), atof(value_input.c_str())));
+                        if(shapingCircle)
+                            mainField.addCharge(Charge(CIRCLE_SHAPE, add_charge_holding_x, add_charge_holding_y, atof(size_input.c_str()), atof(value_input.c_str())));
+                        else if(shapingSquare)
+                            mainField.addCharge(Charge(SQUARE_SHAPE, add_charge_holding_x, add_charge_holding_y, atof(size_input.c_str()), atof(value_input.c_str())));
                         size_input="";
                         value_input="";
                     }
@@ -107,7 +114,7 @@ void initializeConfig(){
     pop_up_rect.setPosition((windowWidth/2)-(windowWidth/5), (windowHeight/2)-(windowHeight/5));
     
     const int firstChargeSize = 10;
-    Charge firstCenterCharge = Charge(windowWidth/2, windowHeight/2, firstChargeSize, 1);
+    Charge firstCenterCharge = Charge(CIRCLE_SHAPE, windowWidth/2, windowHeight/2, firstChargeSize, 1);
     mainField.qCharges.push_back(firstCenterCharge);
     mainField.mapField();
     
@@ -117,6 +124,8 @@ void initializeConfig(){
     buttons.push_back(Button("EqPot Lines", 0,windowHeight-buttonsSize,buttonsSize,buttonsSize,isEqPotLines));
     buttons.push_back(Button("ElField Lines", buttonsSize,windowHeight-buttonsSize,buttonsSize,buttonsSize,isElFieldLines));
     buttons.push_back(Button("ElField Color", buttonsSize*2,windowHeight-buttonsSize,buttonsSize,buttonsSize,isElFieldColor));
+    buttons.push_back(Button("Circle Shape", 0,0,buttonsSize,buttonsSize,shapingCircle));
+    buttons.push_back(Button("Square Shape", 0,buttonsSize,buttonsSize,buttonsSize,shapingSquare));
 }
 
 //Draw loop callade every FPS
@@ -133,21 +142,39 @@ void draw(sf::RenderWindow& window){
         }
     }
     
-    //Drawing charges
+    
+    drawCharges(window);
+    drawButtons(window);
+    drawPopUp(window);
+    
+}
+
+//Drawing charges
+void drawCharges(sf::RenderWindow& window){
     for(int i=0; i<mainField.qCharges.size(); i++){
         
-        //WARNING: SFML takes as size radius not diameter in CircleShape
-        sf::CircleShape shape(mainField.qCharges[i].size);
-        shape.setFillColor(greyCharge);
-        shape.setPosition( mainField.qCharges[i].x-mainField.qCharges[i].size , mainField.qCharges[i].y-mainField.qCharges[i].size );
+        if(mainField.qCharges[i].shape==CIRCLE_SHAPE){
+            //WARNING: SFML takes as size radius not diameter in CircleShape
+            sf::CircleShape shape(mainField.qCharges[i].size);
+            shape.setFillColor(greyCharge);
+            shape.setPosition( mainField.qCharges[i].x-mainField.qCharges[i].size , mainField.qCharges[i].y-mainField.qCharges[i].size );
         
-        window.draw(shape);
+            window.draw(shape);
+        } else if(mainField.qCharges[i].shape==SQUARE_SHAPE){
+            sf::RectangleShape shape(sf::Vector2f(mainField.qCharges[i].size, mainField.qCharges[i].size));
+            shape.setFillColor(greyCharge);
+            shape.setPosition(mainField.qCharges[i].x , mainField.qCharges[i].y);
+            
+            window.draw(shape);
+        }
     }
-    
-    //Drawing buttons
+}
+
+//Drawing buttons
+void drawButtons(sf::RenderWindow& window){
     for(int i=0; i<buttons.size(); i++){
         sf::RectangleShape rectButton(sf::Vector2f(buttons[i].width, buttons[i].height));
-        if((i==0 && adding_charge) || (i==1 && removing_charge) || (i==2 && selecting_charge) || (i==3 && isEqPotLines) || (i==4 && isElFieldLines) || (i==5 && isElFieldColor)){
+        if((i==0 && adding_charge) || (i==1 && removing_charge) || (i==2 && selecting_charge) || (i==3 && isEqPotLines) || (i==4 && isElFieldLines) || (i==5 && isElFieldColor) || (i==6 && shapingCircle) || (i==7 && shapingSquare)){
             rectButton.setFillColor(redButtonOn);
             rectButton.setOutlineColor(redBoundsButtonOn);
         } else {
@@ -176,6 +203,10 @@ void draw(sf::RenderWindow& window){
             buttText1.setPosition(buttons[i].x+(buttonsSize/4), buttons[i].y+(buttonsSize/4.8));
         else if (i==5)
             buttText1.setPosition(buttons[i].x+(buttonsSize/4), buttons[i].y+(buttonsSize/4.8));
+        else if (i==6)
+            buttText1.setPosition(buttons[i].x+(buttonsSize/3.8), buttons[i].y+(buttonsSize/4.8));
+        else if (i==7)
+            buttText1.setPosition(buttons[i].x+(buttonsSize/4.7), buttons[i].y+(buttonsSize/4.8));
         sf::Text buttText2;
         buttText2.setCharacterSize(14);
         buttText2.setFillColor(sf::Color::White);
@@ -190,8 +221,10 @@ void draw(sf::RenderWindow& window){
         window.draw(buttText1);
         window.draw(buttText2);
     }
-    
-    //Draw kind of pop_up
+}
+
+//Draw kind of pop_up
+void drawPopUp(sf::RenderWindow& window){
     if(showing_pop_up){
         pop_up_rect.setFillColor(sf::Color::White);
         pop_up_rect.setOutlineColor(sf::Color::Red);
@@ -279,14 +312,21 @@ void draw(sf::RenderWindow& window){
             pop_value.setString("Value = "+std::to_string(mainField.qCharges[selected_index].value));
             pop_value.setPosition(pop_up_rect.getPosition().x+20, pop_up_rect.getPosition().y+pop_up_rect.getSize().y/4+(pop_up_rect.getSize().y/8)*3);
             
+            sf::Text pop_type;
+            pop_type.setCharacterSize(15);
+            pop_type.setFillColor(sf::Color::Black);
+            pop_type.setFont(font);
+            pop_type.setString("Type = "+mainField.qCharges[selected_index].shape);
+            pop_type.setPosition(pop_up_rect.getPosition().x+20, pop_up_rect.getPosition().y+pop_up_rect.getSize().y/4+(pop_up_rect.getSize().y/8)*4);
+            
             window.draw(pop_title);
             window.draw(pop_x);
             window.draw(pop_y);
             window.draw(pop_size);
             window.draw(pop_value);
+            window.draw(pop_type);
         }
     }
-    
 }
 
 //Check if on mouse click buttons have been clicked
@@ -321,6 +361,12 @@ bool checkForButtonsClick(int x, int y){
                 isEqPotLines=false;
                 isElFieldLines=false;
                 isElFieldColor=true;
+            } else if(i==6){
+                shapingCircle=true;
+                shapingSquare=false;
+            } else if(i==7){
+                shapingCircle=false;
+                shapingSquare=true;
             }
             return true;
         }

@@ -7,18 +7,25 @@ extern const int windowHeight;
 extern bool showing_pop_up;
 extern int selected_index;
 
+const std::string CIRCLE_SHAPE = "CIRCLE_SHAPE";
+const std::string SQUARE_SHAPE = "SQUARE_SHAPE";
+
 void draw(sf::RenderWindow& window);
+void drawCharges(sf::RenderWindow& window);
+void drawButtons(sf::RenderWindow& window);
+void drawPopUp(sf::RenderWindow& window);
 void initializeConfig();
 bool checkForButtonsClick(int x, int y);
 
 class Charge {
 	public:
 
+    std::string shape;
 	int x, y, size;
 	double value;
 
-    Charge(int x, int y, int size, double value);
     bool isPointInside(int tx, int ty);
+    Charge(std::string shape, int x, int y, int size, double value);
 };
 
 class Point {
