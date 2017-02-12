@@ -7,24 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		645AE2F81E50130C0008FED7 /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 645AE2F71E50130C0008FED7 /* ResourcePath.mm */; };
-		645AE2FB1E50130C0008FED7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE2FA1E50130C0008FED7 /* main.cpp */; };
-		645AE2FE1E50130D0008FED7 /* cute_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 645AE2FD1E50130D0008FED7 /* cute_image.jpg */; };
-		645AE3001E50130D0008FED7 /* nice_music.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 645AE2FF1E50130D0008FED7 /* nice_music.ogg */; };
-		645AE3021E50130D0008FED7 /* sansation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 645AE3011E50130D0008FED7 /* sansation.ttf */; };
-		645AE3041E50130D0008FED7 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 645AE3031E50130D0008FED7 /* icon.png */; };
+		645AE30B1E5013D10008FED7 /* sfml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30A1E5013D10008FED7 /* sfml.cpp */; };
+		645AE3101E50143D0008FED7 /* charge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30D1E50143D0008FED7 /* charge.cpp */; };
+		645AE3111E50143D0008FED7 /* field.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30E1E50143D0008FED7 /* field.cpp */; };
+		645AE3121E50143D0008FED7 /* point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30F1E50143D0008FED7 /* point.cpp */; };
+		645AE3141E501B220008FED7 /* button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE3131E501B220008FED7 /* button.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		645AE2F21E50130C0008FED7 /* Charges.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Charges.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		645AE2F61E50130C0008FED7 /* Charges-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Charges-Info.plist"; sourceTree = "<group>"; };
-		645AE2F71E50130C0008FED7 /* ResourcePath.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
-		645AE2F91E50130C0008FED7 /* ResourcePath.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
-		645AE2FA1E50130C0008FED7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		645AE2FD1E50130D0008FED7 /* cute_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cute_image.jpg; sourceTree = "<group>"; };
-		645AE2FF1E50130D0008FED7 /* nice_music.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = nice_music.ogg; sourceTree = "<group>"; };
-		645AE3011E50130D0008FED7 /* sansation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sansation.ttf; sourceTree = "<group>"; };
-		645AE3031E50130D0008FED7 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		645AE30A1E5013D10008FED7 /* sfml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sfml.cpp; sourceTree = "<group>"; };
+		645AE30C1E5014080008FED7 /* header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = header.h; sourceTree = "<group>"; };
+		645AE30D1E50143D0008FED7 /* charge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = charge.cpp; sourceTree = "<group>"; };
+		645AE30E1E50143D0008FED7 /* field.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = field.cpp; sourceTree = "<group>"; };
+		645AE30F1E50143D0008FED7 /* point.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = point.cpp; sourceTree = "<group>"; };
+		645AE3131E501B220008FED7 /* button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = button.cpp; sourceTree = "<group>"; };
+		645AE3151E502B550008FED7 /* sansation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sansation.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,10 +56,13 @@
 		645AE2F41E50130C0008FED7 /* Charges */ = {
 			isa = PBXGroup;
 			children = (
-				645AE2F71E50130C0008FED7 /* ResourcePath.mm */,
-				645AE2F91E50130C0008FED7 /* ResourcePath.hpp */,
-				645AE2FA1E50130C0008FED7 /* main.cpp */,
-				645AE2FC1E50130D0008FED7 /* Resources */,
+				645AE30C1E5014080008FED7 /* header.h */,
+				645AE30A1E5013D10008FED7 /* sfml.cpp */,
+				645AE30D1E50143D0008FED7 /* charge.cpp */,
+				645AE30E1E50143D0008FED7 /* field.cpp */,
+				645AE30F1E50143D0008FED7 /* point.cpp */,
+				645AE3131E501B220008FED7 /* button.cpp */,
+				645AE3151E502B550008FED7 /* sansation.ttf */,
 				645AE2F51E50130C0008FED7 /* Supporting Files */,
 			);
 			path = Charges;
@@ -72,17 +74,6 @@
 				645AE2F61E50130C0008FED7 /* Charges-Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		645AE2FC1E50130D0008FED7 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				645AE2FD1E50130D0008FED7 /* cute_image.jpg */,
-				645AE2FF1E50130D0008FED7 /* nice_music.ogg */,
-				645AE3011E50130D0008FED7 /* sansation.ttf */,
-				645AE3031E50130D0008FED7 /* icon.png */,
-			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,10 +134,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				645AE3041E50130D0008FED7 /* icon.png in Resources */,
-				645AE3021E50130D0008FED7 /* sansation.ttf in Resources */,
-				645AE3001E50130D0008FED7 /* nice_music.ogg in Resources */,
-				645AE2FE1E50130D0008FED7 /* cute_image.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,8 +160,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				645AE2FB1E50130C0008FED7 /* main.cpp in Sources */,
-				645AE2F81E50130C0008FED7 /* ResourcePath.mm in Sources */,
+				645AE3121E50143D0008FED7 /* point.cpp in Sources */,
+				645AE3141E501B220008FED7 /* button.cpp in Sources */,
+				645AE3101E50143D0008FED7 /* charge.cpp in Sources */,
+				645AE3111E50143D0008FED7 /* field.cpp in Sources */,
+				645AE30B1E5013D10008FED7 /* sfml.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
