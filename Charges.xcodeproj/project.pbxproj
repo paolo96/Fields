@@ -12,6 +12,7 @@
 		645AE3121E50143D0008FED7 /* point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE30F1E50143D0008FED7 /* point.cpp */; };
 		645AE3141E501B220008FED7 /* button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE3131E501B220008FED7 /* button.cpp */; };
 		645AE3191E50F3C80008FED7 /* charge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 645AE3181E50F3C80008FED7 /* charge.cpp */; };
+		64BBE16E1E51BA8E0044A32C /* custom_charge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64BBE16C1E51BA8E0044A32C /* custom_charge.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		645AE3131E501B220008FED7 /* button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = button.cpp; sourceTree = "<group>"; };
 		645AE3151E502B550008FED7 /* sansation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sansation.ttf; sourceTree = "<group>"; };
 		645AE3181E50F3C80008FED7 /* charge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = charge.cpp; sourceTree = "<group>"; };
+		64BBE16C1E51BA8E0044A32C /* custom_charge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = custom_charge.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				645AE30C1E5014080008FED7 /* header.h */,
 				645AE30A1E5013D10008FED7 /* sfml.cpp */,
 				645AE3181E50F3C80008FED7 /* charge.cpp */,
+				64BBE16C1E51BA8E0044A32C /* custom_charge.cpp */,
 				645AE30E1E50143D0008FED7 /* field.cpp */,
 				645AE30F1E50143D0008FED7 /* point.cpp */,
 				645AE3131E501B220008FED7 /* button.cpp */,
@@ -160,6 +163,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64BBE16E1E51BA8E0044A32C /* custom_charge.cpp in Sources */,
 				645AE3121E50143D0008FED7 /* point.cpp in Sources */,
 				645AE3191E50F3C80008FED7 /* charge.cpp in Sources */,
 				645AE3141E501B220008FED7 /* button.cpp in Sources */,
@@ -296,6 +300,7 @@
 				645AE3091E50130D0008FED7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

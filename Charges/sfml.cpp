@@ -35,6 +35,7 @@ bool isElFieldLines = false;
 bool isElFieldColor = false;
 bool shapingCircle = true;
 bool shapingSquare = false;
+bool shapingCustom = false;
 
 int main()
 {
@@ -88,6 +89,8 @@ int main()
                             mainField.addCharge(Charge(CIRCLE_SHAPE, add_charge_holding_x, add_charge_holding_y, atof(size_input.c_str()), atof(value_input.c_str())));
                         else if(shapingSquare)
                             mainField.addCharge(Charge(SQUARE_SHAPE, add_charge_holding_x, add_charge_holding_y, atof(size_input.c_str()), atof(value_input.c_str())));
+                        else if(shapingCustom)
+                            mainField.addCharge(CustomCharge(add_charge_holding_x, add_charge_holding_y, atof(size_input.c_str()), atof(value_input.c_str())));
                         size_input="";
                         value_input="";
                     }
@@ -126,6 +129,7 @@ void initializeConfig(){
     buttons.push_back(Button("ElField Color", buttonsSize*2,windowHeight-buttonsSize,buttonsSize,buttonsSize,isElFieldColor));
     buttons.push_back(Button("Circle Shape", 0,0,buttonsSize,buttonsSize,shapingCircle));
     buttons.push_back(Button("Square Shape", 0,buttonsSize,buttonsSize,buttonsSize,shapingSquare));
+    buttons.push_back(Button("Custom Shape", 0,buttonsSize*2,buttonsSize,buttonsSize,shapingCustom));
 }
 
 //Draw loop callade every FPS
@@ -161,6 +165,14 @@ void drawCharges(sf::RenderWindow& window){
         
             window.draw(shape);
         } else if(mainField.qCharges[i].shape==SQUARE_SHAPE){
+            sf::RectangleShape shape(sf::Vector2f(mainField.qCharges[i].size, mainField.qCharges[i].size));
+            shape.setFillColor(greyCharge);
+            shape.setPosition(mainField.qCharges[i].x , mainField.qCharges[i].y);
+            
+            window.draw(shape);
+        } else if(mainField.qCharges[i].shape==CUSTOM_SHAPE){
+            CustomCharge temp = static_cast<CustomCharge>(mainField.qCharges[i]);
+            for(int x=0; mainField.qCharges[i].)
             sf::RectangleShape shape(sf::Vector2f(mainField.qCharges[i].size, mainField.qCharges[i].size));
             shape.setFillColor(greyCharge);
             shape.setPosition(mainField.qCharges[i].x , mainField.qCharges[i].y);

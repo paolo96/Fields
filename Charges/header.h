@@ -9,6 +9,7 @@ extern int selected_index;
 
 const std::string CIRCLE_SHAPE = "CIRCLE_SHAPE";
 const std::string SQUARE_SHAPE = "SQUARE_SHAPE";
+const std::string CUSTOM_SHAPE = "CUSTOM_SHAPE";
 
 void draw(sf::RenderWindow& window);
 void drawCharges(sf::RenderWindow& window);
@@ -26,6 +27,14 @@ class Charge {
 
     bool isPointInside(int tx, int ty);
     Charge(std::string shape, int x, int y, int size, double value);
+};
+
+class CustomCharge: public Charge {
+    public:
+    
+    std::vector< std::vector<bool> > shape_map;
+    
+    CustomCharge(int x, int y, int size, double value);
 };
 
 class Point {
