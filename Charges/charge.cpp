@@ -1,16 +1,8 @@
 #include "header.h"
-#include <iostream>
+#include <math.h>
 
 bool Charge::isPointInside(int tx, int ty){
-    if(shape==CIRCLE_SHAPE){
-        if( (tx>=(x-size)) && (ty>=(y-size)) && (tx<=(x+size)) && (ty<=(y+size)) )
-            return true;
-        return false;
-    } else if(shape==SQUARE_SHAPE){
-        if( (tx>=(x)) && (ty>=(y)) && (tx<=(x+size)) && (ty<=(y+size)) )
-            return true;
-        return false;
-    }
+    return ( (pow(x-tx, 2) + pow(y-ty, 2)) <= pow(size, 2) );
 }
 
 Charge::Charge(std::string shape, int x, int y, int size, double value){
@@ -20,3 +12,5 @@ Charge::Charge(std::string shape, int x, int y, int size, double value){
     this->size = size;
     this->value = value;
 }
+
+Charge::~Charge(){}
