@@ -1,21 +1,17 @@
-sfml: sfml.o charge.o field.o point.o
-	g++ sfml.o charge.o field.o point.o -o sfml -lsfml-graphics -lsfml-window -lsfml-system
+SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+FLAGS = -O3
+
+all:
 	./sfml
 
-sfml.o: sfml.cpp
-	g++ -c sfml.cpp
+fields: sfml.o draws.o field.o charge.o square_charge.o custom_charge.o point.o button.o vector.o
+	g++ $(FLAGS) sfml.o draws.o charge.o square_charge.o custom_charge.o field.o point.o button.o vector.o -o sfml $(SFML_LIBS)
 
-charge.o: charge.cpp
-	g++ -c charge.cpp
+%.o: 
+	g++ $(FLAGS) -c $*.cpp
 
-field.o: field.cpp
-	g++ -c field.cpp
-
-point.o: point.cpp
-	g++ -c point.cpp
-
-execute:
-	./sfml
+commit: fields clean
+	scp *.* paolo.biglioli@tolab.fisica.unimi.it:Fields/
 
 clean: 
 	rm *.o
