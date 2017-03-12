@@ -2,8 +2,8 @@
 #include <vector>
 #include <memory>
 
-extern const int windowWidth;
-extern const int windowHeight;
+const int windowWidth = 800;
+const int windowHeight = 600;
 
 const std::string CIRCLE_SHAPE = "CIRCLE_SHAPE";
 const std::string SQUARE_SHAPE = "SQUARE_SHAPE";
@@ -11,12 +11,16 @@ const std::string CUSTOM_SHAPE = "CUSTOM_SHAPE";
 
 const double k0 = 8987551787.3681764;
 const double PI = 3.14159265358979323846;
+const double arrowAngle = PI/4;
 
 const int linesDeepReduction = 35;
 const int linesPerCharge = 20;
+const int arrowsReduction = 100;
+const int arrowSize = 10;
 const int lineDrawingReduction = 4;
 const int buttonsSize = 80;
 
+extern int mouse_draw_size;
 extern int selected_index;
 extern bool inputing_size;
 extern bool inputing_custom;
@@ -38,55 +42,65 @@ extern std::string size_input;
 extern std::string value_input;
 
 bool checkForButtonsClick(int x, int y);
+void leftButtonMousePress(sf::RenderWindow& window);
+void paintingCustomCharge(sf::RenderWindow& window);
+void keyboardPress(sf::RenderWindow& window, sf::Event& event);
 void initializeConfig();
 
 class Charge {
 	public:
 
-    std::string shape;
-	int x, y, size;
-	double value;
+		std::string shape;
+		int x, y, size;
+		double value;
 
-    Charge(std::string shape, int x, int y, int size, double value);
-    virtual bool isPointInside(int tx, int ty);
-    virtual ~Charge();
+		Charge(std::string shape, int x, int y, int size, double value);
+		virtual bool isPointInside(int tx, int ty);
+		virtual ~Charge();
 };
 
 class Point {
 	public:
 
-	int x, y;
-	double value;
-    
-    Point(int x, int  y);
-    Point(int x, int  y, double value);
+		int x, y;
+		double value;
+		
+		Point(int x, int  y);
+		Point(int x, int  y, double value);
 
-	bool operator<(const Point& temp) const;
+		bool operator<(const Point& temp) const;
 };
 
 class Vector {
 	public:
 
-	int x, y;
-	double intensity, alpha;
+		int x, y;
+		double intensity, alpha;
 
-	Vector(int x, int y, double intensity, double alpha);
+		Vector(int x, int y, double intensity, double alpha);
+};
+
+class CircleCharge: public Charge {
+    public:
+    
+		CircleCharge(int x, int y, int size, double value);
+		bool isPointInside(int tx, int ty);
 };
 
 class SquareCharge: public Charge {
     public:
     
-    SquareCharge(int x, int y, int size, double value);
-    bool isPointInside(int tx, int ty);
+		SquareCharge(int x, int y, int size, double value);
+		bool isPointInside(int tx, int ty);
 };
 
 class CustomCharge: public Charge {
     public:
     
-    std::vector< Point > shape_map;
-    
-    CustomCharge(int x, int y, int size, double value);
-    bool isPointInside(int tx, int ty);
+		std::vector< Point > shape_map;
+		
+		CustomCharge(int x, int y, int size, double value);
+		bool isPointInside(int tx, int ty);
 };
 
 extern std::shared_ptr<CustomCharge> currentCustom;
@@ -94,12 +108,12 @@ extern std::shared_ptr<CustomCharge> currentCustom;
 class Button {
     public:
     
-    int x, y, width, height;
-    bool checked;
-    std::string name;
-    
-    Button(std::string name, int x, int y, int width, int height, bool checked);
-    bool isPointInside(int tx, int ty);
+		int x, y, width, height;
+		bool checked;
+		std::string name;
+		
+		Button(std::string name, int x, int y, int width, int height, bool checked);
+		bool isPointInside(int tx, int ty);
     
 };
 
@@ -108,45 +122,55 @@ extern std::vector<Button> buttons;
 class Line {
 	public:
 
-	std::vector<Point> pointsCoord;
+		std::vector<Point> pointsCoord;
 };
 
 class Field {
 	public:
 
-    std::vector< std::shared_ptr<Charge> > qCharges;
+		double maxElFieldIntensity;
+		double minElFieldIntensity;
 
-	std::vector< std::vector<double> > potIntensityMap;
-	std::vector<Point> eqPotPoints;
-	std::vector<Line> eqPotLines;
+		std::vector< std::shared_ptr<Charge> > qCharges;
+		std::vector< std::vector<double> > potIntensityMap;
+		std::vector<Point> eqPotPoints;
+		std::vector<Line> eqPotLines;
+		std::vector<Line> elFieldLines;
+		std::vector< std::vector<sf::Vertex> > arrows;
+		std::vector< std::vector<double> > elFieldIntensityMap;
+	
+		Field();
+		void update();
+		void clear();
 
-	std::vector<Line> elFieldLines;
+		//Equipotential lines related methods
+		void mapPotential();
+		double potValueInPoint(int x, int y);
+		void findEquipotentialPoints();
+		void findEquipotentialLines();
 
-	Field();
-	void mapField();
+		//Electric Field lines related methods
+		double angleFromPoints(double x1, double y1, double x2, double y2);
+		bool insideCharges(double tx, double ty, int startCharge);
+		Vector elFieldValueInPoint(int x, int y);
+		Line buildElFieldLine(Point startField, int startCharge);
+		void findElFieldLines();
+		std::vector<sf::Vertex> buildElFieldArrowHead(double tx, double ty, double talpha);
 
-	//Potential related methods
-	double potValueInPoint(int x, int y);
-	void findEquipotentialPoints();
-    void findEquipotentialLines();
+		//Electric Field color related methods
+		void mapElFieldIntensity();
 
-	//Electric Field related methods
-	double angleFromPoints(double x1, double y1, double x2, double y2);
-	bool insideCharges(double tx, double ty, int startCharge);
-	Vector elFieldValueInPoint(int x, int y);
-	Line buildElFieldLine(Point startField, int startCharge);
-	void findElFieldLines();
-
-	//Charge managing related methods
-    void addCharge();
-    void removeCharge(int x, int y);
-    void selectCharge(int x, int y);
-
-    void clear();
+		//Charge managing related methods
+		void addCharge();
+		void removeCharge(int x, int y);
+		void selectCharge(int x, int y);
 	
 };
 
-void draw(sf::RenderWindow& window, Field& mainField);
-void drawCharges(sf::RenderWindow& window, Field& mainField);
+extern Field mainField;
+
+void draw(sf::RenderWindow& window);
+void drawField(sf::RenderWindow& window);
+void drawCharges(sf::RenderWindow& window);
 void drawButtons(sf::RenderWindow& window);
-void drawPopUp(sf::RenderWindow& window, Field& mainField);
+void drawPopUp(sf::RenderWindow& window);

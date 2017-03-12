@@ -11,6 +11,7 @@ Point::Point(int x, int  y, double value){
 	this->value=value;
 }
 
+//Used by std::sort in Field::findEquipotentialLines()
 bool Point::operator<(const Point& temp) const{
 	return (value < temp.value);
 }

@@ -10,7 +10,7 @@ Button::Button(std::string name, int x, int y, int width, int height, bool check
 }
 
 bool Button::isPointInside(int tx, int ty){
-    if( (tx>=x) && (ty>=y) && (tx<=(x+width)) && (ty<=(y+height)) )
+    if( (tx>x) && (ty>y) && (tx<(x+width)) && (ty<(y+height)) )
         return true;
     return false;
 }

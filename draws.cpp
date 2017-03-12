@@ -1,7 +1,7 @@
 #include "header.h"
-#include <iostream>
 #include <string>
 #include <sstream>
+#include <math.h>
 
 const sf::Color greyCharge(128, 128, 128);
 const sf::Color redButtonOn(255, 99, 71);
@@ -14,75 +14,93 @@ sf::RectangleShape pop_up_rect;
 
 std::vector<Button> buttons;
 
-//Draw loop called every FPS
-void draw(sf::RenderWindow& window, Field& mainField){
+//Draws everything 
+//It's called every FPS by main
+void draw(sf::RenderWindow& window){
     
+    drawField(window);
+    drawCharges(window);
+    drawButtons(window);
+    drawPopUp(window);
+}
+
+//Draws field in current modality (equipotential lines, field lines, field color)
+void drawField(sf::RenderWindow& window){
+
+	std::vector<sf::Vertex> toDrawPixels;
 	if(isEqPotLines){
-    	//Draws equipotential lines
 		for(int i=0; i<mainField.eqPotLines.size(); i+=lineDrawingReduction){
 		    for(int y=0; y<mainField.eqPotLines[i].pointsCoord.size(); y++){
-		        sf::RectangleShape pixel(sf::Vector2f(1, 1));
-		        pixel.setFillColor(sf::Color::White);
-		        pixel.setPosition(mainField.eqPotLines[i].pointsCoord[y].x, mainField.eqPotLines[i].pointsCoord[y].y);
-		        
-		        window.draw(pixel);
+		        sf::Vertex pixel(sf::Vector2f(mainField.eqPotLines[i].pointsCoord[y].x, mainField.eqPotLines[i].pointsCoord[y].y), sf::Color::White);
+			toDrawPixels.push_back(pixel);
 		    }
 		}
 	} else if(isElFieldLines){
-		//Draws electric field lines
 		for(int i=0; i<mainField.elFieldLines.size(); i++){
 		    for(int y=0; y<mainField.elFieldLines[i].pointsCoord.size(); y++){
-		        sf::RectangleShape pixel(sf::Vector2f(1, 1));
-		        pixel.setFillColor(sf::Color::White);
-		        pixel.setPosition(mainField.elFieldLines[i].pointsCoord[y].x, mainField.elFieldLines[i].pointsCoord[y].y);
-		        
-		        window.draw(pixel);
+				sf::Vertex pixel(sf::Vector2f(mainField.elFieldLines[i].pointsCoord[y].x, mainField.elFieldLines[i].pointsCoord[y].y), sf::Color::White);
+				toDrawPixels.push_back(pixel);
 		    }
 		}
+		//Draws arrows
+		for(int i=0; i<mainField.arrows.size(); i++)
+			window.draw(&mainField.arrows[i][0], mainField.arrows[i].size(), sf::Triangles);
+	} else if(isElFieldColor){
+		for(int x=0; x<windowWidth; x++){
+			for(int y=0; y<windowHeight; y++){
+				double colorValue = ((mainField.elFieldIntensityMap[x][y]-mainField.minElFieldIntensity)/(mainField.maxElFieldIntensity-mainField.minElFieldIntensity))*255;
+				sf::Vertex pixel(sf::Vector2f(x,y), sf::Color(255,255,255,(int)colorValue));
+				toDrawPixels.push_back(pixel);
+			}		
+		}
 	}
-    
-    drawCharges(window, mainField);
-    drawButtons(window);
-    drawPopUp(window, mainField);
-    
+	window.draw(&toDrawPixels[0], toDrawPixels.size(), sf::Points);
 }
 
-//Drawing charges
-void drawCharges(sf::RenderWindow& window, Field& mainField){
+//Draws charges
+void drawCharges(sf::RenderWindow& window){
+
     for(int i=0; i<mainField.qCharges.size(); i++){
         
         if(mainField.qCharges[i]->shape==CIRCLE_SHAPE){
-            //WARNING: SFML takes as size radius not diameter in CircleShape
+            //SFML takes as size radius not diameter in CircleShape
             sf::CircleShape shape(mainField.qCharges[i]->size);
             shape.setFillColor(greyCharge);
             shape.setPosition( mainField.qCharges[i]->x-mainField.qCharges[i]->size , mainField.qCharges[i]->y-mainField.qCharges[i]->size );
             
             window.draw(shape);
         } else if(mainField.qCharges[i]->shape==SQUARE_SHAPE){
+
             sf::RectangleShape shape(sf::Vector2f(mainField.qCharges[i]->size, mainField.qCharges[i]->size));
             shape.setFillColor(greyCharge);
             shape.setPosition(mainField.qCharges[i]->x , mainField.qCharges[i]->y);
             
             window.draw(shape);
         } else if(mainField.qCharges[i]->shape==CUSTOM_SHAPE){
+
+	    	std::vector<sf::Vertex> shapePixels;
+			
             int posX = mainField.qCharges[i]->x;
             int posY = mainField.qCharges[i]->y;
             std::shared_ptr<CustomCharge> tempPRT = std::static_pointer_cast<CustomCharge>(mainField.qCharges[i]);
             for(int i=0; i<tempPRT->shape_map.size(); i++){
-                sf::RectangleShape shape(sf::Vector2f(1, 1));
-                shape.setFillColor(greyCharge);
-                shape.setPosition(tempPRT->shape_map[i].x+posX, tempPRT->shape_map[i].y+posY);
-                
-                window.draw(shape);
+				sf::Vertex pixel(sf::Vector2f(tempPRT->shape_map[i].x+posX, tempPRT->shape_map[i].y+posY), greyCharge);
+				shapePixels.push_back(pixel);
             }
+			window.draw(&shapePixels[0], shapePixels.size(), sf::Points);
         }
     }
 }
 
-//Drawing buttons
+//Draws buttons
 void drawButtons(sf::RenderWindow& window){
+
     for(int i=0; i<buttons.size(); i++){
+
         sf::RectangleShape rectButton(sf::Vector2f(buttons[i].width, buttons[i].height));
+        rectButton.setPosition(buttons[i].x, buttons[i].y);
+        rectButton.setOutlineThickness(-10);
+		
         if((i==0 && adding_charge) || (i==1 && removing_charge) || (i==2 && selecting_charge) || (i==3 && isEqPotLines) || (i==4 && isElFieldLines) || (i==5 && isElFieldColor) || (i==6 && shapingCircle) || (i==7 && shapingSquare) || (i==8 && shapingCustom)){
             rectButton.setFillColor(redButtonOn);
             rectButton.setOutlineColor(redBoundsButtonOn);
@@ -90,11 +108,10 @@ void drawButtons(sf::RenderWindow& window){
             rectButton.setFillColor(orangeButtonOff);
             rectButton.setOutlineColor(orangeBoundsButtonOff);
         }
-        rectButton.setPosition(buttons[i].x, buttons[i].y);
-        rectButton.setOutlineThickness(-10);
         
         std::string firstLine = buttons[i].name.substr(0, buttons[i].name.find(" "));
         std::string secondLine = buttons[i].name.substr(buttons[i].name.find(" "), buttons[i].name.length());
+
         sf::Text buttText1;
         buttText1.setCharacterSize(14);
         buttText1.setFillColor(sf::Color::White);
@@ -104,20 +121,15 @@ void drawButtons(sf::RenderWindow& window){
             buttText1.setPosition(buttons[i].x+(buttonsSize/3), buttons[i].y+(buttonsSize/4.8));
         else if (i==1)
             buttText1.setPosition(buttons[i].x+(buttonsSize/6), buttons[i].y+(buttonsSize/4.8));
-        else if (i==2)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/4), buttons[i].y+(buttonsSize/4.8));
-        else if (i==3)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/4), buttons[i].y+(buttonsSize/4.8));
-        else if (i==4)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/4), buttons[i].y+(buttonsSize/4.8));
-        else if (i==5)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/4), buttons[i].y+(buttonsSize/4.8));
         else if (i==6)
             buttText1.setPosition(buttons[i].x+(buttonsSize/3.8), buttons[i].y+(buttonsSize/4.8));
         else if (i==7)
             buttText1.setPosition(buttons[i].x+(buttonsSize/4.7), buttons[i].y+(buttonsSize/4.8));
         else if (i==8)
             buttText1.setPosition(buttons[i].x+(buttonsSize/5.5), buttons[i].y+(buttonsSize/4.8));
+		else
+            buttText1.setPosition(buttons[i].x+(buttonsSize/4), buttons[i].y+(buttonsSize/4.8));
+
         sf::Text buttText2;
         buttText2.setCharacterSize(14);
         buttText2.setFillColor(sf::Color::White);
@@ -134,28 +146,53 @@ void drawButtons(sf::RenderWindow& window){
     }
 }
 
-//Draw the pop-up
-void drawPopUp(sf::RenderWindow& window, Field& mainField){
+//Draws the pop-up
+void drawPopUp(sf::RenderWindow& window){
     if(showing_pop_up){
         
         pop_up_rect.setFillColor(sf::Color::White);
         pop_up_rect.setOutlineColor(sf::Color::Red);
         pop_up_rect.setOutlineThickness(-10);
         
-        //draw custom charge drawing pop-up
+        //draws painting pop-up
         if(adding_charge && inputing_custom){
             pop_up_rect.setOutlineThickness(10);
             window.draw(pop_up_rect);
+
+        	sf::RectangleShape titleRect(sf::Vector2f(200, 40));
+            titleRect.setFillColor(sf::Color::White);
+            titleRect.setOutlineColor(sf::Color::Red);
+			titleRect.setPosition(300, pop_up_rect.getPosition().y-60);
+        	titleRect.setOutlineThickness(5);
+			window.draw(titleRect);
+			
+			sf::Text pop_title;
+            pop_title.setCharacterSize(16);
+            pop_title.setFillColor(sf::Color::Black);
+            pop_title.setFont(font);
+            pop_title.setStyle(sf::Text::Bold);
+            pop_title.setString("Painting Size = "+std::to_string(mouse_draw_size));
+            pop_title.setPosition(335, pop_up_rect.getPosition().y-58);
+			window.draw(pop_title);
+
+			sf::Text pop_subtitle;
+            pop_subtitle.setCharacterSize(13);
+            pop_subtitle.setFillColor(sf::Color::Black);
+            pop_subtitle.setFont(font);
+            pop_subtitle.setString("Change with Keyboard Numbers");
+            pop_subtitle.setPosition(303, pop_up_rect.getPosition().y-38);
+			window.draw(pop_subtitle);
+			
+	    	std::vector<sf::Vertex> shapePixels;
             for(int i=0; i<currentCustom->shape_map.size(); i++){
-                sf::RectangleShape pixel(sf::Vector2f(1, 1));
-                pixel.setFillColor(greyCharge);
-                pixel.setPosition(currentCustom->shape_map[i].x+pop_up_rect.getPosition().x, currentCustom->shape_map[i].y+pop_up_rect.getPosition().y);
-                
-                window.draw(pixel);
+                sf::Vertex pixel(sf::Vector2f(currentCustom->shape_map[i].x+pop_up_rect.getPosition().x, currentCustom->shape_map[i].y+pop_up_rect.getPosition().y), greyCharge);
+				shapePixels.push_back(pixel);
             }
+			window.draw(&shapePixels[0], shapePixels.size(), sf::Points);
+			
         } else window.draw(pop_up_rect);
         
-        //draw add charge input pop-up
+        //draws adding charge input pop-up
         if(adding_charge && !inputing_custom){
             sf::Text pop_title;
             pop_title.setCharacterSize(20);
@@ -197,7 +234,7 @@ void drawPopUp(sf::RenderWindow& window, Field& mainField){
             window.draw(enter_confirm);
         }
         
-        //draw selecting pop up
+        //draws selecting pop up
         if(selected_index!=-1 && selecting_charge){
             sf::Text pop_title;
             pop_title.setCharacterSize(20);
@@ -211,35 +248,28 @@ void drawPopUp(sf::RenderWindow& window, Field& mainField){
             pop_x.setCharacterSize(15);
             pop_x.setFillColor(sf::Color::Black);
             pop_x.setFont(font);
-            pop_x.setString("x = "+mainField.qCharges[selected_index]->x);
+            pop_x.setString("x = "+std::to_string(mainField.qCharges[selected_index]->x));
             pop_x.setPosition(pop_up_rect.getPosition().x+20, pop_up_rect.getPosition().y+pop_up_rect.getSize().y/4);
             
             sf::Text pop_y;
             pop_y.setCharacterSize(15);
             pop_y.setFillColor(sf::Color::Black);
             pop_y.setFont(font);
-            pop_y.setString("y = "+mainField.qCharges[selected_index]->y);
+            pop_y.setString("y = "+std::to_string(mainField.qCharges[selected_index]->y));
             pop_y.setPosition(pop_up_rect.getPosition().x+20, pop_up_rect.getPosition().y+pop_up_rect.getSize().y/4+(pop_up_rect.getSize().y/8));
             
             sf::Text pop_size;
             pop_size.setCharacterSize(15);
             pop_size.setFillColor(sf::Color::Black);
             pop_size.setFont(font);
-            pop_size.setString("Size = "+mainField.qCharges[selected_index]->size);
+            pop_size.setString("Size = "+std::to_string(mainField.qCharges[selected_index]->size));
             pop_size.setPosition(pop_up_rect.getPosition().x+20, pop_up_rect.getPosition().y+pop_up_rect.getSize().y/4+(pop_up_rect.getSize().y/8)*2);
             
             sf::Text pop_value;
             pop_value.setCharacterSize(15);
             pop_value.setFillColor(sf::Color::Black);
             pop_value.setFont(font);
-			//String + Double concatenation doesn't work..?!
-			//std::string output = "Value = " + std::to_string(mainField.qCharges[selected_index]->value);
-			//Bad solution:
-			std::ostringstream sstream;
-			sstream << mainField.qCharges[selected_index]->value;
-			std::string varAsString = sstream.str();
-
-            pop_value.setString(varAsString);
+            pop_value.setString("Value = " + std::to_string(mainField.qCharges[selected_index]->value));
             pop_value.setPosition(pop_up_rect.getPosition().x+20, pop_up_rect.getPosition().y+pop_up_rect.getSize().y/4+(pop_up_rect.getSize().y/8)*3);
             
             sf::Text pop_type;
