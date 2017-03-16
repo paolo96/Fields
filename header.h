@@ -5,20 +5,25 @@
 const int windowWidth = 800;
 const int windowHeight = 600;
 
-const std::string CIRCLE_SHAPE = "CIRCLE_SHAPE";
-const std::string SQUARE_SHAPE = "SQUARE_SHAPE";
-const std::string CUSTOM_SHAPE = "CUSTOM_SHAPE";
-
 const double k0 = 8987551787.3681764;
 const double PI = 3.14159265358979323846;
 const double arrowAngle = PI/4;
+const double COLOR_FADE = 0.6;
 
+const int MARGIN_CHARGE_LINES = 6;
+const int EL_FIELD_LINE_LENGHT_LIMIT = 2000;
 const int linesDeepReduction = 35;
 const int linesPerCharge = 20;
 const int arrowsReduction = 100;
 const int arrowSize = 10;
 const int lineDrawingReduction = 4;
 const int buttonsSize = 80;
+
+const sf::Color greyCharge(128, 128, 128);
+const sf::Color redButtonOn(255, 99, 71);
+const sf::Color redBoundsButtonOn(255, 69, 0);
+const sf::Color orangeButtonOff(255, 165, 0);
+const sf::Color orangeBoundsButtonOff(255, 140, 0);
 
 extern int mouse_draw_size;
 extern int selected_index;
@@ -47,17 +52,6 @@ void paintingCustomCharge(sf::RenderWindow& window);
 void keyboardPress(sf::RenderWindow& window, sf::Event& event);
 void initializeConfig();
 
-class Charge {
-	public:
-
-		std::string shape;
-		int x, y, size;
-		double value;
-
-		Charge(std::string shape, int x, int y, int size, double value);
-		virtual bool isPointInside(int tx, int ty);
-		virtual ~Charge();
-};
 
 class Point {
 	public:
@@ -69,6 +63,8 @@ class Point {
 		Point(int x, int  y, double value);
 
 		bool operator<(const Point& temp) const;
+		bool operator==(const Point& temp) const;
+		
 };
 
 class Vector {
@@ -80,11 +76,30 @@ class Vector {
 		Vector(int x, int y, double intensity, double alpha);
 };
 
+class Charge {
+	public:
+
+		int x, y, size;
+		double value;
+
+		Charge(int x, int y, int size, double value);
+		virtual bool isPointInside(int tx, int ty) = 0;
+		virtual double potInPoint(int tx, int ty) = 0;
+		virtual void drawCharge(sf::RenderWindow& window) = 0;
+		virtual Point externalPoint(double alpha) = 0;
+		virtual Vector elFieldInPoint(int tx, int ty) = 0;
+		virtual ~Charge();
+};
+
 class CircleCharge: public Charge {
     public:
     
 		CircleCharge(int x, int y, int size, double value);
 		bool isPointInside(int tx, int ty);
+		double potInPoint(int tx, int ty);
+		void drawCharge(sf::RenderWindow& window);
+		Point externalPoint(double alpha);
+		Vector elFieldInPoint(int tx, int ty);
 };
 
 class SquareCharge: public Charge {
@@ -92,15 +107,25 @@ class SquareCharge: public Charge {
     
 		SquareCharge(int x, int y, int size, double value);
 		bool isPointInside(int tx, int ty);
+		double potInPoint(int tx, int ty);
+		void drawCharge(sf::RenderWindow& window);
+		Point externalPoint(double alpha);
+		Vector elFieldInPoint(int tx, int ty);
 };
 
 class CustomCharge: public Charge {
     public:
     
 		std::vector< Point > shape_map;
+		std::vector< Point > external_points;
 		
 		CustomCharge(int x, int y, int size, double value);
 		bool isPointInside(int tx, int ty);
+		double potInPoint(int tx, int ty);
+		void drawCharge(sf::RenderWindow& window);
+		void findExternalPoints();
+		Point externalPoint(double alpha);
+		Vector elFieldInPoint(int tx, int ty);
 };
 
 extern std::shared_ptr<CustomCharge> currentCustom;
@@ -164,6 +189,7 @@ class Field {
 		void addCharge();
 		void removeCharge(int x, int y);
 		void selectCharge(int x, int y);
+		//TODO implement moveCharge(...)
 	
 };
 

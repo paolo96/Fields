@@ -3,12 +3,6 @@
 #include <sstream>
 #include <math.h>
 
-const sf::Color greyCharge(128, 128, 128);
-const sf::Color redButtonOn(255, 99, 71);
-const sf::Color redBoundsButtonOn(255, 69, 0);
-const sf::Color orangeButtonOff(255, 165, 0);
-const sf::Color orangeBoundsButtonOff(255, 140, 0);
-
 sf::Font font;
 sf::RectangleShape pop_up_rect;
 
@@ -17,7 +11,6 @@ std::vector<Button> buttons;
 //Draws everything 
 //It's called every FPS by main
 void draw(sf::RenderWindow& window){
-    
     drawField(window);
     drawCharges(window);
     drawButtons(window);
@@ -46,9 +39,14 @@ void drawField(sf::RenderWindow& window){
 		for(int i=0; i<mainField.arrows.size(); i++)
 			window.draw(&mainField.arrows[i][0], mainField.arrows[i].size(), sf::Triangles);
 	} else if(isElFieldColor){
+		double colorValue;
+		double fadedMax = mainField.maxElFieldIntensity*COLOR_FADE;
 		for(int x=0; x<windowWidth; x++){
 			for(int y=0; y<windowHeight; y++){
-				double colorValue = ((mainField.elFieldIntensityMap[x][y]-mainField.minElFieldIntensity)/(mainField.maxElFieldIntensity-mainField.minElFieldIntensity))*255;
+				if(mainField.elFieldIntensityMap[x][y]>fadedMax)
+					colorValue = 255;
+				else
+					colorValue = ((mainField.elFieldIntensityMap[x][y]-mainField.minElFieldIntensity)/(fadedMax-mainField.minElFieldIntensity))*255;
 				sf::Vertex pixel(sf::Vector2f(x,y), sf::Color(255,255,255,(int)colorValue));
 				toDrawPixels.push_back(pixel);
 			}		
@@ -60,36 +58,8 @@ void drawField(sf::RenderWindow& window){
 //Draws charges
 void drawCharges(sf::RenderWindow& window){
 
-    for(int i=0; i<mainField.qCharges.size(); i++){
-        
-        if(mainField.qCharges[i]->shape==CIRCLE_SHAPE){
-            //SFML takes as size radius not diameter in CircleShape
-            sf::CircleShape shape(mainField.qCharges[i]->size);
-            shape.setFillColor(greyCharge);
-            shape.setPosition( mainField.qCharges[i]->x-mainField.qCharges[i]->size , mainField.qCharges[i]->y-mainField.qCharges[i]->size );
-            
-            window.draw(shape);
-        } else if(mainField.qCharges[i]->shape==SQUARE_SHAPE){
-
-            sf::RectangleShape shape(sf::Vector2f(mainField.qCharges[i]->size, mainField.qCharges[i]->size));
-            shape.setFillColor(greyCharge);
-            shape.setPosition(mainField.qCharges[i]->x , mainField.qCharges[i]->y);
-            
-            window.draw(shape);
-        } else if(mainField.qCharges[i]->shape==CUSTOM_SHAPE){
-
-	    	std::vector<sf::Vertex> shapePixels;
-			
-            int posX = mainField.qCharges[i]->x;
-            int posY = mainField.qCharges[i]->y;
-            std::shared_ptr<CustomCharge> tempPRT = std::static_pointer_cast<CustomCharge>(mainField.qCharges[i]);
-            for(int i=0; i<tempPRT->shape_map.size(); i++){
-				sf::Vertex pixel(sf::Vector2f(tempPRT->shape_map[i].x+posX, tempPRT->shape_map[i].y+posY), greyCharge);
-				shapePixels.push_back(pixel);
-            }
-			window.draw(&shapePixels[0], shapePixels.size(), sf::Points);
-        }
-    }
+    for(int i=0; i<mainField.qCharges.size(); i++)
+		mainField.qCharges[i]->drawCharge(window);
 }
 
 //Draws buttons
@@ -272,19 +242,12 @@ void drawPopUp(sf::RenderWindow& window){
             pop_value.setString("Value = " + std::to_string(mainField.qCharges[selected_index]->value));
             pop_value.setPosition(pop_up_rect.getPosition().x+20, pop_up_rect.getPosition().y+pop_up_rect.getSize().y/4+(pop_up_rect.getSize().y/8)*3);
             
-            sf::Text pop_type;
-            pop_type.setCharacterSize(15);
-            pop_type.setFillColor(sf::Color::Black);
-            pop_type.setFont(font);
-            pop_type.setString("Type = "+mainField.qCharges[selected_index]->shape);
-            pop_type.setPosition(pop_up_rect.getPosition().x+20, pop_up_rect.getPosition().y+pop_up_rect.getSize().y/4+(pop_up_rect.getSize().y/8)*4);
             
             window.draw(pop_title);
             window.draw(pop_x);
             window.draw(pop_y);
             window.draw(pop_size);
             window.draw(pop_value);
-            window.draw(pop_type);
         }
     }
 }

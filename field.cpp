@@ -103,39 +103,10 @@ void Field::mapPotential(){
 double Field::potValueInPoint(int x, int y){
 
 	double totPotValue = 0;
-	double distance, potFromSingleCharge;
     
-	for(int i=0; i<qCharges.size(); i++){
-        if(qCharges[i]->shape==CIRCLE_SHAPE){
-            distance = sqrt( pow(x-qCharges[i]->x, 2) + pow(y-qCharges[i]->y, 2) );
-		
-            potFromSingleCharge = ( (k0*(qCharges[i]->value)) / distance );
-		
-            totPotValue += potFromSingleCharge;
-        } else if(qCharges[i]->shape==SQUARE_SHAPE){
-            
-            for(int X=qCharges[i]->x; X<=(qCharges[i]->x+qCharges[i]->size); X++){
-                for(int Y=qCharges[i]->y; Y<=(qCharges[i]->y+qCharges[i]->size); Y++){
-                    distance = sqrt( pow(x-X, 2) + pow(y-Y, 2) );
-                    
-                    potFromSingleCharge = ( (k0*(qCharges[i]->value)) / distance );
-                    
-                    totPotValue += potFromSingleCharge;
-                }
-            }
-        } else if(qCharges[i]->shape==CUSTOM_SHAPE){
-            int posX = qCharges[i]->x;
-            int posY = qCharges[i]->y;
-            std::shared_ptr<CustomCharge> tempPTR = std::static_pointer_cast<CustomCharge>(qCharges[i]);
-            for(int i=0; i<tempPTR->shape_map.size(); i++){
-                distance = sqrt( pow(x-(tempPTR->shape_map[i].x+posX), 2) + pow(y-(tempPTR->shape_map[i].y+posY), 2) );
-                
-                potFromSingleCharge = ( (k0*(tempPTR->value)) / distance );
-                
-                totPotValue += potFromSingleCharge;
-            }
-        }
-	}
+	for(int i=0; i<qCharges.size(); i++)
+		totPotValue += qCharges[i]->potInPoint(x, y);
+
 	return totPotValue;
 }
 
@@ -149,10 +120,7 @@ void Field::findElFieldLines(){
 	for(int i=0; i<qCharges.size(); i++){
 		double propFactor = totChargeAbs/abs(qCharges[i]->value);
 		for(double alpha=0; alpha<PI*2; alpha+=(((PI*2)/linesPerCharge)*propFactor)){
-			int tx = round(qCharges[i]->x+(qCharges[i]->size*cos(alpha)));
-			int ty = round(qCharges[i]->y+(qCharges[i]->size*sin(alpha)));
-			Point temp(tx, ty, alpha);
-			elFieldLines.push_back(buildElFieldLine(temp, i));
+			elFieldLines.push_back(buildElFieldLine(qCharges[i]->externalPoint(alpha), i));
 		}
 	}
 }
@@ -183,6 +151,11 @@ Line Field::buildElFieldLine(Point startPoint, int startCharge){
 
 		Point loopPoint(tx, ty, talpha);
 		temp.pointsCoord.push_back(loopPoint);
+
+		if(i==EL_FIELD_LINE_LENGHT_LIMIT){
+			temp.pointsCoord.clear();
+			break;
+		}
 	}
 	
 	return temp;
@@ -192,16 +165,13 @@ Line Field::buildElFieldLine(Point startPoint, int startCharge){
 //Direction=0 mean field with right direction, direction=PI mean field left directed
 Vector Field::elFieldValueInPoint(int x, int y){
 	
-	double totFieldValueX = 0, totFieldValueY = 0, distance, alpha;
+	double totFieldValueX = 0, totFieldValueY = 0;
 
 	for(int i=0; i<qCharges.size(); i++){
-		distance = sqrt( pow(x-qCharges[i]->x, 2) + pow(y-qCharges[i]->y, 2) );
 
-		alpha = angleFromPoints(x,y,qCharges[i]->x,qCharges[i]->y);
-
-		totFieldValueX += cos(alpha)*((k0*qCharges[i]->value)/pow(distance,2));
-		totFieldValueY += sin(alpha)*((k0*qCharges[i]->value)/pow(distance,2));
-
+		Vector elFieldByOneCharge = qCharges[i]->elFieldInPoint(x, y);
+		totFieldValueX += elFieldByOneCharge.x;
+		totFieldValueY += elFieldByOneCharge.y;
 	}
 
 	Vector v( x, y, sqrt(pow(totFieldValueX, 2) + pow(totFieldValueY, 2)), angleFromPoints(totFieldValueX, totFieldValueY,0,0) );

@@ -91,7 +91,7 @@ void initializeConfig(){
 void leftButtonMousePress(sf::RenderWindow& window){
 
 	sf::Vector2i position = sf::Mouse::getPosition(window);
-    std::cout<<"Mouse click at ("<<position.x<<","<<position.y<<")"<<std::endl;
+    //std::cout<<"Mouse click at ("<<position.x<<","<<position.y<<")"<<std::endl;
     dragging_mouse=true;
     
     if(showing_pop_up){
@@ -115,7 +115,6 @@ void leftButtonMousePress(sf::RenderWindow& window){
                 currentCustom->x=position.x;
                 currentCustom->y=position.y;
                 std::shared_ptr<CustomCharge> copy_of_curr_cust = std::make_shared<CustomCharge>(*currentCustom);
-                copy_of_curr_cust->value = copy_of_curr_cust->value / (copy_of_curr_cust->shape_map.size());
                 mainField.qCharges.push_back(copy_of_curr_cust);
                 mainField.addCharge();
             } else {
@@ -151,8 +150,8 @@ void paintingCustomCharge(sf::RenderWindow& window){
 
 //Handles key press on keyboard
 void keyboardPress(sf::RenderWindow& window, sf::Event& event){
-	char output = event.text.unicode;
-	std::cout<<"Pressed \""<<output<<"\""<<std::endl;
+	//char output = event.text.unicode;
+	//std::cout<<"Pressed \""<<output<<"\""<<std::endl;
    
     if ((((event.text.unicode <= 57) && (event.text.unicode >= 48)) || (event.text.unicode == 46) || (event.text.unicode == 45)) && adding_charge && showing_pop_up && !inputing_custom){
     	//Accepts numbers, decimal point and '-' to input size and value of the charge
@@ -176,7 +175,6 @@ void keyboardPress(sf::RenderWindow& window, sf::Event& event){
             inputing_custom=false;
             showing_pop_up=false;
             std::shared_ptr<CustomCharge> copy_of_curr_cust = std::make_shared<CustomCharge>(*currentCustom);
-            copy_of_curr_cust->value = copy_of_curr_cust->value / (copy_of_curr_cust->shape_map.size());
             mainField.qCharges.push_back(copy_of_curr_cust);
             mainField.addCharge();
             pop_up_rect = sf::RectangleShape(sf::Vector2f(windowWidth/2.5, windowHeight/2.5));
@@ -193,9 +191,7 @@ void keyboardPress(sf::RenderWindow& window, sf::Event& event){
                     mainField.qCharges.push_back(qToAdd);
                     mainField.addCharge();
                 } else if (shapingSquare) {
-                    double size = atof(size_input.c_str());
-                    double valueCorrect = atof(value_input.c_str()) / (size*size);
-                    std::shared_ptr<SquareCharge> qToAdd(new SquareCharge(add_charge_holding_x, add_charge_holding_y, size, valueCorrect));
+                    std::shared_ptr<SquareCharge> qToAdd(new SquareCharge(add_charge_holding_x, add_charge_holding_y, atof(size_input.c_str()), atof(value_input.c_str())));
                     mainField.qCharges.push_back(qToAdd);
                     mainField.addCharge();
                 } else if(shapingCustom) {
@@ -220,7 +216,7 @@ void keyboardPress(sf::RenderWindow& window, sf::Event& event){
 bool checkForButtonsClick(int x, int y){
     for(int i=0; i<buttons.size(); i++){
         if(buttons[i].isPointInside(x, y)){
-            std::cout<<"Clicked button "<<i<<std::endl;
+            std::cout<<"Clicked button \""<<buttons[i].name<<"\""<<std::endl;
             if(i==0){
                 adding_charge=true;
                 removing_charge=false;

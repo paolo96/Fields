@@ -15,3 +15,7 @@ Point::Point(int x, int  y, double value){
 bool Point::operator<(const Point& temp) const{
 	return (value < temp.value);
 }
+
+bool Point::operator==(const Point& temp) const{
+        return ((x == temp.x) && (y == temp.y));
+}
