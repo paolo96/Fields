@@ -76,15 +76,15 @@ void initializeConfig(){
     mainField.qCharges.push_back(firstCenterCharge);
     mainField.update();
     
-    buttons.push_back(Button("Add Charge", windowWidth-buttonsSize,0,buttonsSize,buttonsSize,adding_charge));
-    buttons.push_back(Button("Remove Charge", windowWidth-buttonsSize,buttonsSize,buttonsSize,buttonsSize,removing_charge));
-    buttons.push_back(Button("Select Charge", windowWidth-buttonsSize,buttonsSize*2,buttonsSize,buttonsSize,selecting_charge));
-    buttons.push_back(Button("EqPot Lines", 0,windowHeight-buttonsSize,buttonsSize,buttonsSize,isEqPotLines));
-    buttons.push_back(Button("ElField Lines", buttonsSize,windowHeight-buttonsSize,buttonsSize,buttonsSize,isElFieldLines));
-    buttons.push_back(Button("ElField Color", buttonsSize*2,windowHeight-buttonsSize,buttonsSize,buttonsSize,isElFieldColor));
-    buttons.push_back(Button("Circle Shape", 0,0,buttonsSize,buttonsSize,shapingCircle));
-    buttons.push_back(Button("Square Shape", 0,buttonsSize,buttonsSize,buttonsSize,shapingSquare));
-    buttons.push_back(Button("Custom Shape", 0,buttonsSize*2,buttonsSize,buttonsSize,shapingCustom));
+    buttons.push_back(Button("Add Charge", windowWidth-BUTTONS_SIZE,0,BUTTONS_SIZE,BUTTONS_SIZE,adding_charge));
+    buttons.push_back(Button("Remove Charge", windowWidth-BUTTONS_SIZE,BUTTONS_SIZE,BUTTONS_SIZE,BUTTONS_SIZE,removing_charge));
+    buttons.push_back(Button("Select Charge", windowWidth-BUTTONS_SIZE,BUTTONS_SIZE*2,BUTTONS_SIZE,BUTTONS_SIZE,selecting_charge));
+    buttons.push_back(Button("EqPot Lines", 0,windowHeight-BUTTONS_SIZE,BUTTONS_SIZE,BUTTONS_SIZE,isEqPotLines));
+    buttons.push_back(Button("ElField Lines", BUTTONS_SIZE,windowHeight-BUTTONS_SIZE,BUTTONS_SIZE,BUTTONS_SIZE,isElFieldLines));
+    buttons.push_back(Button("ElField Color", BUTTONS_SIZE*2,windowHeight-BUTTONS_SIZE,BUTTONS_SIZE,BUTTONS_SIZE,isElFieldColor));
+    buttons.push_back(Button("Circle Shape", 0,0,BUTTONS_SIZE,BUTTONS_SIZE,shapingCircle));
+    buttons.push_back(Button("Square Shape", 0,BUTTONS_SIZE,BUTTONS_SIZE,BUTTONS_SIZE,shapingSquare));
+    buttons.push_back(Button("Custom Shape", 0,BUTTONS_SIZE*2,BUTTONS_SIZE,BUTTONS_SIZE,shapingCustom));
 }
 
 //Handles left button mouse click

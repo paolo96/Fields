@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 #include <memory>
 
 //Fills Field's arrays with needed values of current modality
@@ -33,7 +33,7 @@ void Field::findEquipotentialLines(){
     double delta;
     for(int i=0; i<eqPotPoints.size(); i++){
         Line temp;
-        delta = abs( int(eqPotPoints[i].value/linesDeepReduction) );
+        delta = std::abs( int(eqPotPoints[i].value/LINES_DEEP_REDUCTION) );
         for(int y=i+1; y<eqPotPoints.size(); y++){
 			if( (eqPotPoints[i].value+delta)>=(eqPotPoints[y].value-delta) && (eqPotPoints[i].value-delta)<=(eqPotPoints[y].value+delta) ){
 				temp.pointsCoord.push_back(eqPotPoints[y]);
@@ -53,7 +53,7 @@ void Field::findEquipotentialPoints(){
     for (int x=0; x<windowWidth; x++){
         for (int y=0; y<windowHeight; y++){
 
-            delta = abs( int(potIntensityMap[x][y]/linesDeepReduction) );
+            delta = std::abs( int(potIntensityMap[x][y]/LINES_DEEP_REDUCTION) );
             Point point = Point(x, y, potIntensityMap[x][y]);
 			
 			for (int X=x; X<windowWidth; X++){
@@ -115,11 +115,11 @@ void Field::findElFieldLines(){
 	double totChargeAbs = 0;
 	
 	for(int i=0; i<qCharges.size(); i++)
-		totChargeAbs += abs(qCharges[i]->value);
+		totChargeAbs += std::abs(qCharges[i]->value);
 
 	for(int i=0; i<qCharges.size(); i++){
-		double propFactor = totChargeAbs/abs(qCharges[i]->value);
-		for(double alpha=0; alpha<PI*2; alpha+=(((PI*2)/linesPerCharge)*propFactor)){
+		double propFactor = totChargeAbs/std::abs(qCharges[i]->value);
+		for(double alpha=0; alpha<PI*2; alpha+=(((PI*2)/EL_FIELD_LINE_PER_CHARGE)*propFactor)){
 			elFieldLines.push_back(buildElFieldLine(qCharges[i]->externalPoint(alpha), i));
 		}
 	}
@@ -140,7 +140,7 @@ Line Field::buildElFieldLine(Point startPoint, int startCharge){
 		ty+=sin(talpha);
 		talpha = elFieldValueInPoint(round(tx), round(ty)).alpha;
 		
-		if(i%arrowsReduction==0 && i!=0)
+		if(i%ARROWS_REDUCTION==0 && i!=0)
 			arrows.push_back(buildElFieldArrowHead(tx, ty, talpha));
 
 		if(qCharges[startCharge]->value<0){
@@ -154,6 +154,8 @@ Line Field::buildElFieldLine(Point startPoint, int startCharge){
 
 		if(i==EL_FIELD_LINE_LENGHT_LIMIT){
 			temp.pointsCoord.clear();
+			for(int j=0; j<i/ARROWS_REDUCTION; j++)
+				arrows.pop_back();
 			break;
 		}
 	}
@@ -187,11 +189,11 @@ double Field::angleFromPoints(double x1, double y1, double x2, double y2){
 	if(x1!=x2){
 		alpha = atan((y1-y2)/(x1-x2));
 		if(y1<y2 && x1>x2)
-			alpha = abs(alpha);
+			alpha = std::abs(alpha);
 		else if (y1<y2 && x1<x2)
 			alpha = PI - alpha;
 		else if (y1>y2 && x1<x2)
-			alpha = PI + abs(alpha);
+			alpha = PI + std::abs(alpha);
 		else if (y1>y2 && x1>x2)
 			alpha = 2*PI - alpha;
 	} else if(y1<y2){
@@ -210,8 +212,8 @@ double Field::angleFromPoints(double x1, double y1, double x2, double y2){
 std::vector<sf::Vertex> Field::buildElFieldArrowHead(double tx, double ty, double talpha){
 	std::vector<sf::Vertex> temp;
 
-	double px = -(cos(arrowAngle)*arrowSize);
-	double py = sin(arrowAngle)*arrowSize;
+	double px = -(cos(ARROW_ANGLE)*ARROW_SIZE);
+	double py = sin(ARROW_ANGLE)*ARROW_SIZE;
 	double px2 = px;
 	double py2 = -py;
 

@@ -1,5 +1,5 @@
 #include "header.h"
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 SquareCharge::SquareCharge(int x, int y, int size, double value) : Charge(x, y, size, value){}
@@ -29,7 +29,7 @@ double SquareCharge::potInPoint(int tx, int ty){
 void SquareCharge::drawCharge(sf::RenderWindow& window){
 
     sf::RectangleShape shape(sf::Vector2f(size, size));
-    shape.setFillColor(greyCharge);
+    shape.setFillColor(GREY_CHARGE);
     shape.setPosition(x, y);
     
     window.draw(shape);

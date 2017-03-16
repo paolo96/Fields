@@ -7,23 +7,23 @@ const int windowHeight = 600;
 
 const double k0 = 8987551787.3681764;
 const double PI = 3.14159265358979323846;
-const double arrowAngle = PI/4;
+const double ARROW_ANGLE = PI/4;
 const double COLOR_FADE = 0.6;
 
+const int EL_FIELD_LINE_LENGHT_LIMIT = 8000;
+const int EL_FIELD_LINE_PER_CHARGE = 20;
+const int LINES_DEEP_REDUCTION = 35;
+const int LINES_DRAWING_REDUCTION = 4;
+const int ARROWS_REDUCTION = 100;
+const int ARROW_SIZE = 10;
 const int MARGIN_CHARGE_LINES = 6;
-const int EL_FIELD_LINE_LENGHT_LIMIT = 2000;
-const int linesDeepReduction = 35;
-const int linesPerCharge = 20;
-const int arrowsReduction = 100;
-const int arrowSize = 10;
-const int lineDrawingReduction = 4;
-const int buttonsSize = 80;
+const int BUTTONS_SIZE = 80;
 
-const sf::Color greyCharge(128, 128, 128);
-const sf::Color redButtonOn(255, 99, 71);
-const sf::Color redBoundsButtonOn(255, 69, 0);
-const sf::Color orangeButtonOff(255, 165, 0);
-const sf::Color orangeBoundsButtonOff(255, 140, 0);
+const sf::Color GREY_CHARGE(128, 128, 128);
+const sf::Color RED_BUTTON_ON(255, 99, 71);
+const sf::Color RED_BOUNDS_BUTTON_ON(255, 69, 0);
+const sf::Color ORANGE_BUTTON_OFF(255, 165, 0);
+const sf::Color ORANGE_BOUNDS_BUTTON_OFF(255, 140, 0);
 
 extern int mouse_draw_size;
 extern int selected_index;
@@ -46,6 +46,7 @@ extern sf::RectangleShape pop_up_rect;
 extern std::string size_input;
 extern std::string value_input;
 
+//Functions defined in sfml.cpp
 bool checkForButtonsClick(int x, int y);
 void leftButtonMousePress(sf::RenderWindow& window);
 void paintingCustomCharge(sf::RenderWindow& window);
@@ -195,6 +196,7 @@ class Field {
 
 extern Field mainField;
 
+//Functions defined in draws.cpp
 void draw(sf::RenderWindow& window);
 void drawField(sf::RenderWindow& window);
 void drawCharges(sf::RenderWindow& window);

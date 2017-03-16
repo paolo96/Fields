@@ -1,5 +1,5 @@
 #include "header.h"
-#include <math.h>
+#include <cmath>
 
 CustomCharge::CustomCharge(int x, int y, int size, double value) : Charge(x, y, size, value){}
 
@@ -31,7 +31,7 @@ void CustomCharge::drawCharge(sf::RenderWindow& window){
     std::vector<sf::Vertex> shapePixels;
 
     for(int i=0; i<shape_map.size(); i++){
-		sf::Vertex pixel(sf::Vector2f(shape_map[i].x+x, shape_map[i].y+y), greyCharge);
+		sf::Vertex pixel(sf::Vector2f(shape_map[i].x+x, shape_map[i].y+y), GREY_CHARGE);
 		shapePixels.push_back(pixel);
     }
 
@@ -60,12 +60,12 @@ Point CustomCharge::externalPoint(double alpha){
 	if (external_points.size()==0 && shape_map.size()!=0)
 		findExternalPoints();
 
-	double deltaMin=abs(mainField.angleFromPoints(external_points[0].x,external_points[0].y,size/2,size/2)-alpha);
+	double deltaMin=std::abs(mainField.angleFromPoints(external_points[0].x,external_points[0].y,size/2,size/2)-alpha);
 	int minPoint = 0;
 	for(int i=1; i<external_points.size(); i++){
 		double alphaPoint = mainField.angleFromPoints(external_points[i].x,external_points[i].y,size/2,size/2);
-		if(abs(alphaPoint-alpha)<deltaMin){
-			deltaMin=abs(alphaPoint-alpha);
+		if(std::abs(alphaPoint-alpha)<deltaMin){
+			deltaMin=std::abs(alphaPoint-alpha);
 			minPoint=i;
 		}
 	}

@@ -1,5 +1,5 @@
 #include "header.h"
-#include <math.h>
+#include <cmath>
 
 CircleCharge::CircleCharge(int x, int y, int size, double value) : Charge(x, y, size, value){}
 
@@ -18,7 +18,7 @@ double CircleCharge::potInPoint(int tx, int ty){
 void CircleCharge::drawCharge(sf::RenderWindow& window){
 
     sf::CircleShape shape(size);
-    shape.setFillColor(greyCharge);
+    shape.setFillColor(GREY_CHARGE);
     shape.setPosition(x-size , y-size);
     
     window.draw(shape);
@@ -34,8 +34,8 @@ Vector CircleCharge::elFieldInPoint(int tx, int ty){
 }
 
 Point CircleCharge::externalPoint(double alpha){
-	int tx = round(x+((size+MARGIN_CHARGE_LINES)*cos(alpha)));
-	int ty = round(y+((size+MARGIN_CHARGE_LINES)*sin(alpha)));
+	int tx = round(x+((size)*cos(alpha)));
+	int ty = round(y+((size)*sin(alpha)));
 	return Point(tx, ty, alpha);
 }
 

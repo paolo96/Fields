@@ -1,7 +1,7 @@
 #include "header.h"
 #include <string>
 #include <sstream>
-#include <math.h>
+#include <cmath>
 
 sf::Font font;
 sf::RectangleShape pop_up_rect;
@@ -22,7 +22,7 @@ void drawField(sf::RenderWindow& window){
 
 	std::vector<sf::Vertex> toDrawPixels;
 	if(isEqPotLines){
-		for(int i=0; i<mainField.eqPotLines.size(); i+=lineDrawingReduction){
+		for(int i=0; i<mainField.eqPotLines.size(); i+=LINES_DRAWING_REDUCTION){
 		    for(int y=0; y<mainField.eqPotLines[i].pointsCoord.size(); y++){
 		        sf::Vertex pixel(sf::Vector2f(mainField.eqPotLines[i].pointsCoord[y].x, mainField.eqPotLines[i].pointsCoord[y].y), sf::Color::White);
 			toDrawPixels.push_back(pixel);
@@ -72,11 +72,11 @@ void drawButtons(sf::RenderWindow& window){
         rectButton.setOutlineThickness(-10);
 		
         if((i==0 && adding_charge) || (i==1 && removing_charge) || (i==2 && selecting_charge) || (i==3 && isEqPotLines) || (i==4 && isElFieldLines) || (i==5 && isElFieldColor) || (i==6 && shapingCircle) || (i==7 && shapingSquare) || (i==8 && shapingCustom)){
-            rectButton.setFillColor(redButtonOn);
-            rectButton.setOutlineColor(redBoundsButtonOn);
+            rectButton.setFillColor(RED_BUTTON_ON);
+            rectButton.setOutlineColor(RED_BOUNDS_BUTTON_ON);
         } else {
-            rectButton.setFillColor(orangeButtonOff);
-            rectButton.setOutlineColor(orangeBoundsButtonOff);
+            rectButton.setFillColor(ORANGE_BUTTON_OFF);
+            rectButton.setOutlineColor(ORANGE_BOUNDS_BUTTON_OFF);
         }
         
         std::string firstLine = buttons[i].name.substr(0, buttons[i].name.find(" "));
@@ -88,17 +88,17 @@ void drawButtons(sf::RenderWindow& window){
         buttText1.setFont(font);
         buttText1.setString(firstLine);
         if(i==0)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/3), buttons[i].y+(buttonsSize/4.8));
+            buttText1.setPosition(buttons[i].x+(BUTTONS_SIZE/3), buttons[i].y+(BUTTONS_SIZE/4.8));
         else if (i==1)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/6), buttons[i].y+(buttonsSize/4.8));
+            buttText1.setPosition(buttons[i].x+(BUTTONS_SIZE/6), buttons[i].y+(BUTTONS_SIZE/4.8));
         else if (i==6)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/3.8), buttons[i].y+(buttonsSize/4.8));
+            buttText1.setPosition(buttons[i].x+(BUTTONS_SIZE/3.8), buttons[i].y+(BUTTONS_SIZE/4.8));
         else if (i==7)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/4.7), buttons[i].y+(buttonsSize/4.8));
+            buttText1.setPosition(buttons[i].x+(BUTTONS_SIZE/4.7), buttons[i].y+(BUTTONS_SIZE/4.8));
         else if (i==8)
-            buttText1.setPosition(buttons[i].x+(buttonsSize/5.5), buttons[i].y+(buttonsSize/4.8));
+            buttText1.setPosition(buttons[i].x+(BUTTONS_SIZE/5.5), buttons[i].y+(BUTTONS_SIZE/4.8));
 		else
-            buttText1.setPosition(buttons[i].x+(buttonsSize/4), buttons[i].y+(buttonsSize/4.8));
+            buttText1.setPosition(buttons[i].x+(BUTTONS_SIZE/4), buttons[i].y+(BUTTONS_SIZE/4.8));
 
         sf::Text buttText2;
         buttText2.setCharacterSize(14);
@@ -106,9 +106,9 @@ void drawButtons(sf::RenderWindow& window){
         buttText2.setFont(font);
         buttText2.setString(secondLine);
         if(i==3 || i==4)
-            buttText2.setPosition(buttons[i].x+(buttonsSize/4.2), buttons[i].y+(buttonsSize/1.9));
+            buttText2.setPosition(buttons[i].x+(BUTTONS_SIZE/4.2), buttons[i].y+(BUTTONS_SIZE/1.9));
         else
-            buttText2.setPosition(buttons[i].x+(buttonsSize/5.2), buttons[i].y+(buttonsSize/1.9));
+            buttText2.setPosition(buttons[i].x+(BUTTONS_SIZE/5.2), buttons[i].y+(BUTTONS_SIZE/1.9));
         
         window.draw(rectButton);
         window.draw(buttText1);
@@ -155,7 +155,7 @@ void drawPopUp(sf::RenderWindow& window){
 			
 	    	std::vector<sf::Vertex> shapePixels;
             for(int i=0; i<currentCustom->shape_map.size(); i++){
-                sf::Vertex pixel(sf::Vector2f(currentCustom->shape_map[i].x+pop_up_rect.getPosition().x, currentCustom->shape_map[i].y+pop_up_rect.getPosition().y), greyCharge);
+                sf::Vertex pixel(sf::Vector2f(currentCustom->shape_map[i].x+pop_up_rect.getPosition().x, currentCustom->shape_map[i].y+pop_up_rect.getPosition().y), GREY_CHARGE);
 				shapePixels.push_back(pixel);
             }
 			window.draw(&shapePixels[0], shapePixels.size(), sf::Points);
