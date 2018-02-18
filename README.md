@@ -1,7 +1,7 @@
 # Fields
 Graphic representation of charges distribution by equipotential lines and electric field lines.
 
-Run with:
+Run:
   make all
 
 
