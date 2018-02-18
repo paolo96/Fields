@@ -1,4 +1,12 @@
 # Fields
 Graphic representation of charges distribution by equipotential lines and electric field lines.
 
-Work in progress.
+Run with:
+  make all
+
+
+Build:
+  make fields
+
+SFML needed to build.
+
